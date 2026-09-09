@@ -6,14 +6,15 @@ from database import engine, SessionLocal, Base
 import models
 import os
 origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
-app.add_middleware(CORSMiddleware, allow_origins=origins,
-                   allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+
 
 Base.metadata.create_all(bind=engine)   # 앱 시작 시 테이블이 없으면 생성
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=origins,
                    allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+
+
 # 요청마다 DB 세션을 열고, 끝나면 반드시 닫는 의존성 함수
 def get_db():
     db = SessionLocal()
