@@ -5,7 +5,14 @@ from sqlalchemy.orm import Session
 from database import engine, SessionLocal, Base
 import models
 import os
-origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:5173,https://memo-frontend-zeta.vercel.app",
+    ).split(",")
+    if origin.strip()
+]
 
 
 Base.metadata.create_all(bind=engine)   # 앱 시작 시 테이블이 없으면 생성
