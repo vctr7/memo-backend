@@ -39,9 +39,26 @@ class MemoOut(BaseModel):
     model_config = {"from_attributes": True}  # ORM 객체 → Pydantic 변환 허용(v2 문법)
 
 
+class VisitorOut(BaseModel):
+    count: int
+
+
 @app.get("/memos", response_model=list[MemoOut])
 def list_memos(db: Session = Depends(get_db)):
     return db.query(models.Memo).all()
+
+
+@app.post("/visits", response_model=VisitorOut)
+def record_visit(db: Session = Depends(get_db)):
+    visitor_count = db.get(models.VisitorCount, 1)
+    if visitor_count is None:
+        visitor_count = models.VisitorCount(id=1, count=1)
+        db.add(visitor_count)
+    else:
+        visitor_count.count += 1
+    db.commit()
+    db.refresh(visitor_count)
+    return {"count": visitor_count.count}
 
 @app.post("/memos", response_model=MemoOut)
 def create_memo(memo: MemoIn, db: Session = Depends(get_db)):
