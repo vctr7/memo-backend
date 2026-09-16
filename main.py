@@ -9,10 +9,11 @@ origins = [
     origin.strip()
     for origin in os.getenv(
         "ALLOWED_ORIGINS",
-        "http://localhost:5173,https://memo-frontend-zeta.vercel.app",
+        "http://localhost:5173",
     ).split(",")
     if origin.strip()
 ]
+origins.append("https://memo-frontend-zeta.vercel.app")
 
 
 Base.metadata.create_all(bind=engine)   # 앱 시작 시 테이블이 없으면 생성
